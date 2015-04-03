@@ -1,0 +1,16 @@
+<table>
+  <tr>
+    <th>Check</th>
+    <th>Status</th>
+    <th>Last Checked</th>
+    <th>History</th>
+  </tr>
+<% @history.each do |check| %>
+<tr>
+  <td><%= check[:check] %></td>
+  <td><%= check[:last_status] %></td>
+  <td><%= Time.at(check[:last_execution]) %></td>
+  <td><%= check[:history].join(',') %></td>
+</tr>
+<% end %>
+</table>

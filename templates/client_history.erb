@@ -1,0 +1,4 @@
+<% @history.each do |check| %>
+<%= check[:check] %>: status - <%= check[:last_status] %>; last checked - <%= Time.at(check[:last_execution]) %>; history - <%= check[:history].join(',') %>
+
+<% end %>

@@ -1,0 +1,4 @@
+<% @clients.each do |client| %>
+<%= client[:name] %> (<%= client[:address] %>) subscriptions: <%= client[:subscriptions].sort().join(', ') %>
+
+<% end %>

@@ -1,0 +1,9 @@
+<% @stashes.each do |stash| %>
+<%= stash[:path] %> added on <%= Time.at(stash[:content][:timestamp]) %>
+<% if stash[:content][:by] %>
+ by <%= stash[:content][:by] %>
+<% end %>
+<% if stash[:expire] %>
+ expires in <%= stash[:expire] %> seconds
+<% end %>
+<% end %>

@@ -1,0 +1,3 @@
+<% @events.each do |event| %>
+<%= event[:client][:name] %> (<%= event[:check][:name] %>) - <%= event[:check][:output] %>
+<% end %>

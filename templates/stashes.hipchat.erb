@@ -1,0 +1,12 @@
+<table>
+  <tr>
+    <th>Path</th><th>Added On</th><th>By</th><th>Seconds to expiration</th>
+  </tr>
+<% @stashes.each do |stash| %>
+<tr>
+  <td><%= stash[:path] %></td>
+  <td><%= Time.at(stash[:content][:timestamp]) %></td>
+  <td><%= stash[:content][:by] || ''%> </td>
+  <td><%= stash[:expire] || '' %></td>
+</tr>
+<% end %>

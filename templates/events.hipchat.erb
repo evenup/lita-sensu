@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>Client</th>
+    <th>Check</th>
+    <th>Occurrences</th>
+    <th>Output</th>
+  </tr>
+<% @events.each do |event| %>
+<tr>
+  <td><%= event[:client][:name] %></td>
+  <td><%= event[:check][:name] %></td>
+  <td><%= event[:occurrences] %></td>
+  <td><%= event[:check][:output] %></td>
+<% end %>

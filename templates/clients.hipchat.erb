@@ -1,0 +1,13 @@
+<table>
+  <tr>
+    <th>Name</th><th>IP</th><th>Subscriptions</th><th>Version
+  </tr>
+<% @clients.each do |client| %>
+<tr>
+  <td><%= client[:name] %></td>
+  <td><%= client[:address] %></td>
+  <td><%= client[:subscriptions].sort().join(', ') %></td>
+  <td><%= client[:version]%></td>
+</tr>
+<% end %>
+</table>
