@@ -9,8 +9,12 @@ describe Lita::Handlers::Sensu, lita_handler: true do
   it { is_expected.to route_command('sensu events for test1').to(:events) }
   it { is_expected.to route_command('sensu info').to(:info) }
   it { is_expected.to route_command('sensu remove client test1').to(:remove_client) }
+  it { is_expected.to route_command('remove client test1').to(:remove_client) }
   it { is_expected.to route_command('sensu resolve event test1/check2').to(:resolve) }
+  it { is_expected.to route_command('resolve event test1/check2').to(:resolve) }
+  it { is_expected.to route_command('resolve event test1/check2').to(:resolve) }
   it { is_expected.to route_command('sensu silence test1').to(:silence) }
+  it { is_expected.to route_command('silence test1').to(:silence) }
   it { is_expected.to route_command('sensu silence test1 check2').to(:silence) }
   it { is_expected.to route_command('sensu silence test1/check2').to(:silence) }
   it { is_expected.to route_command('sensu stashes').to(:stashes) }
