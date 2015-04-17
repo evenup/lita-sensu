@@ -17,9 +17,9 @@ module Lita
       route(/sensu clients/, :clients, help: {"sensu clients" => "List sensu clients"})
       route(/sensu events(?: for (.*))?/, :events, help: {"sensu events [for <client>]" => "Shows current events, optionally for only a specific client"})
       route(/sensu info/, :info, help: { "sensu info" => "Displays sensu information"})
-      route(/sensu remove client (.*)/, :remove_client, help: {"sensu remove client <client>" => "Remove client from sensu"})
-      route(/sensu resolve event (.*)(?:\/)(.*)/, :resolve, help: {"sensu resolve event <client>[/service]" => "Resolve event/all events for client"})
-      route(/sensu silence ([^\s\/]*)(?:\/)?([^\s]*)?(?: for (\d+)(\w))?/, :silence, help: {"sensu silence <hostname>[/<check>][ for <duration><units>]" => "Silence event"})
+      route(/(?:sensu\s+)?remove client (.*)/, :remove_client, help: {"sensu remove client <client>" => "Remove client from sensu"})
+      route(/(?:sensu\s+)?resolve event (.*)(?:\/)(.*)/, :resolve, help: {"sensu resolve event <client>[/service]" => "Resolve event/all events for client"})
+      route(/(?:sensu\s+)?silence ([^\s\/]*)(?:\/)?([^\s]*)?(?: for (\d+)(\w))?/, :silence, help: {"sensu silence <hostname>[/<check>][ for <duration><units>]" => "Silence event"})
       route(/sensu stash(es)?/, :stashes, help: {"sensu stashes" => "Displays current sensu stashes"})
 
       def client(response)
