@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-sensu"
-  spec.version       = "0.1.0"
+  spec.version       = "0.1.1"
   spec.authors       = ["Justin Lambert"]
   spec.email         = ["jlambert@eml.cc"]
   spec.description   = "Lita plugin to interact with sensu"
