@@ -22,9 +22,35 @@ module Lita
       route(/(?:sensu\s+)?silence ([^\s\/]*)(?:\/)?([^\s]*)?(?: for (\d+)(\w))?/, :silence, help: {"sensu silence <hostname>[/<check>][ for <duration><units>]" => "Silence event"})
       route(/sensu stash(es)?/, :stashes, help: {"sensu stashes" => "Displays current sensu stashes"})
 
+      def headers
+        headers = {}
+        if config.api_user
+          headers["Authorization"] = "Basic #{Base64.encode64("#{config.api_user.chomp}:#{config.api_pass.chomp}")}"
+        end
+        headers
+      end
+
+      def http_get(url)
+        http.get(url) do |req|
+          req.headers = headers
+        end
+      end
+
+      def http_delete(url)
+        http.delete(url) do |req|
+          req.headers = headers
+        end
+      end
+
+      def http_post(url, data)
+        http.post(url, data) do |req|
+          req.headers = headers
+        end
+      end
+
       def client(response)
         client = add_domain(response.matches[0][0])
-        resp = http.get("#{config.api_url}:#{config.api_port}/clients/#{client}")
+        resp = http_get("#{config.api_url}:#{config.api_port}/clients/#{client}")
         if resp.status == 200
           client = MultiJson.load(resp.body, :symbolize_keys => true)
           response.reply(MultiJson.dump(client, :pretty => true))
@@ -38,7 +64,7 @@ module Lita
 
       def client_history(response)
         client = add_domain(response.matches[0][0])
-        resp = http.get("#{config.api_url}:#{config.api_port}/clients/#{client}/history")
+        resp = http_get("#{config.api_url}:#{config.api_port}/clients/#{client}/history")
         if resp.status == 200
           history = MultiJson.load(resp.body, :symbolize_keys => true).sort{|a,b| a[:check]<=>b[:check]}
           response.reply(render_template('client_history', history: history))
@@ -49,7 +75,7 @@ module Lita
       end
 
       def clients(response)
-        resp = http.get("#{config.api_url}:#{config.api_port}/clients")
+        resp = http_get("#{config.api_url}:#{config.api_port}/clients")
         if resp.status == 200
           clients = MultiJson.load(resp.body, :symbolize_keys => true).sort{|a,b| a[:name]<=>b[:name]}
           response.reply(render_template('clients', clients: clients))
@@ -66,7 +92,7 @@ module Lita
           client = ''
         end
 
-        resp = http.get("#{config.api_url}:#{config.api_port}/events#{client}")
+        resp = http_get("#{config.api_url}:#{config.api_port}/events#{client}")
         if resp.status == 200
           events = MultiJson.load(resp.body, :symbolize_keys => true).sort{|a,b| a[:client][:name]<=>b[:client][:name]}
           response.reply(render_template('events', events: events))
@@ -77,7 +103,7 @@ module Lita
       end
 
       def info(response)
-        resp = http.get("#{config.api_url}:#{config.api_port}/info")
+        resp = http_get("#{config.api_url}:#{config.api_port}/info")
         raise RequestError unless resp.status == 200
         info = MultiJson.load(resp.body, :symbolize_keys => true)
         response.reply(MultiJson.dump(info, :pretty => true))
@@ -85,7 +111,7 @@ module Lita
 
       def remove_client(response)
         client = add_domain(response.matches[0][0])
-        resp = http.delete("#{config.api_url}:#{config.api_port}/clients/#{client}")
+        resp = http_delete("#{config.api_url}:#{config.api_port}/clients/#{client}")
         if resp.status == 202
           response.reply("#{client} removed")
         elsif resp.status == 404
@@ -101,7 +127,7 @@ module Lita
         check = response.matches[0][1]
 
         data = { :client => client, :check => check }
-        resp = http.post("#{config.api_url}:#{config.api_port}/resolve", MultiJson.dump(data))
+        resp = http_post("#{config.api_url}:#{config.api_port}/resolve", MultiJson.dump(data))
         if resp.status == 202
           response.reply("#{client}/#{check} resolved")
         elsif resp.status == 400
@@ -154,7 +180,7 @@ module Lita
           :path => "silence/#{path}"
         }
 
-        resp = http.post("#{config.api_url}:#{config.api_port}/stashes", MultiJson.dump(data))
+        resp = http_post("#{config.api_url}:#{config.api_port}/stashes", MultiJson.dump(data))
         if resp.status == 201
           response.reply("#{path} silenced for #{humanDuration}")
         else
@@ -164,7 +190,7 @@ module Lita
       end
 
       def stashes(response)
-        resp = http.get("#{config.api_url}:#{config.api_port}/stashes")
+        resp = http_get("#{config.api_url}:#{config.api_port}/stashes")
         if resp.status == 200
           stashes = MultiJson.load(resp.body, :symbolize_keys => true).sort{|a,b| a[:name]<=>b[:name]}
           response.reply(render_template('stashes', stashes: stashes))
