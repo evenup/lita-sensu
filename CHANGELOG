@@ -1,0 +1,5 @@
+20150506 - v0.2.0
+  Remove Hipchat HTML templates
+  Add support for HTTP basic auth
+20150417 - v0.1.1
+  Initial release
