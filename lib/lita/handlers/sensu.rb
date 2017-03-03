@@ -146,12 +146,6 @@ module Lita
         duration = response.matches[0][2].to_i || nil
         units = response.matches[0][3] || nil
 
-        if check != nil && check != ''
-          path = client + '/' + check
-        else
-          path = client
-        end
-
         if units
           case units
           when 's'
@@ -173,19 +167,20 @@ module Lita
         end
 
         data = {
-          :content => {
-            :by => response.user.name
-          },
-          :expire => expiration,
-          :path => "silence/#{path}"
+          creator: response.user.name,
+          expire: expiration,
+          reason: 'Because Lita says so!',
+          subscription: "client:#{client}"
         }
 
-        resp = http_post("#{config.api_url}:#{config.api_port}/stashes", MultiJson.dump(data))
+        data[:check] = check if check != nil && check != ''
+
+        resp = http_post("#{config.api_url}:#{config.api_port}/silenced", MultiJson.dump(data))
         if resp.status == 201
-          response.reply("#{path} silenced for #{humanDuration}")
+          response.reply("#{client}:#{(check && !check.empty?) ? check : '*'} silenced for #{humanDuration}")
         else
-          log.warn("Sensu returned an internal error posting '#{MultiJson.dump(data)}' to #{config.api_url}:#{config.api_port}/stashes")
-          response.reply("An error occurred posting to #{path}")
+          log.warn("Sensu returned an internal error posting '#{MultiJson.dump(data)}' to #{config.api_url}:#{config.api_port}/silenced")
+          response.reply("An error occurred silencing to #{client}:#{(check && !check.empty?) ? check : '*'}")
         end
       end
 

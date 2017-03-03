@@ -1,3 +1,9 @@
+require 'time'
+
+def localtime(string)
+  Time.parse(string).to_time
+end
+
 require "simplecov"
 require "coveralls"
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[

@@ -1,6 +1,8 @@
 language: ruby
+sudo: required
 rvm:
-  - 2.0.0
+  - 2.2
+  - 2.3
 script: bundle exec rake
 before_install:
   - gem update --system
