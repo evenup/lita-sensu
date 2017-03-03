@@ -220,45 +220,45 @@ describe Lita::Handlers::Sensu, lita_handler: true do
 
   describe '#silence' do
     it 'should silence an event on a specific client' do
-      allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":3600,"path":"silence/test1.example.com/disk-free"}').and_return(response)
+      allow_any_instance_of(Faraday::Connection).to receive(:post).with("http://sensu.example.com:5678/silenced", '{"creator":"Test User","expire":3600,"reason":"Because Lita says so!","subscription":"client:test1.example.com","check":"disk-free"}').and_return(response)
       allow(response).to receive(:status).and_return(201)
       send_message('sensu silence test1/disk-free')
-      expect(replies.last).to eq("test1.example.com/disk-free silenced for 1h")
+      expect(replies.last).to eq("test1.example.com:disk-free silenced for 1h")
     end
 
    it 'should silence for seconds' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":1,"path":"silence/test1.example.com/disk-free"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":1,"reason":"Because Lita says so!","subscription":"client:test1.example.com","check":"disk-free"}').and_return(response)
      allow(response).to receive(:status).and_return(201)
      send_message('sensu silence test1/disk-free for 1s')
-     expect(replies.last).to eq("test1.example.com/disk-free silenced for 1s")
+     expect(replies.last).to eq("test1.example.com:disk-free silenced for 1s")
    end
 
    it 'should silence a client' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":3600,"path":"silence/test1.example.com"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":3600,"reason":"Because Lita says so!","subscription":"client:test1.example.com"}').and_return(response)
      allow(response).to receive(:status).and_return(201)
      send_message('sensu silence test1')
-     expect(replies.last).to eq("test1.example.com silenced for 1h")
+     expect(replies.last).to eq("test1.example.com:* silenced for 1h")
    end
 
    it 'should silence for minutes' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":60,"path":"silence/test1.example.com"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":60,"reason":"Because Lita says so!","subscription":"client:test1.example.com"}').and_return(response)
      allow(response).to receive(:status).and_return(201)
      send_message('sensu silence test1 for 1m')
-     expect(replies.last).to eq("test1.example.com silenced for 1m")
+     expect(replies.last).to eq("test1.example.com:* silenced for 1m")
    end
 
    it 'should silence for hours' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":3600,"path":"silence/test1.example.com"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":3600,"reason":"Because Lita says so!","subscription":"client:test1.example.com"}').and_return(response)
      allow(response).to receive(:status).and_return(201)
      send_message('sensu silence test1 for 1h')
-     expect(replies.last).to eq("test1.example.com silenced for 1h")
+     expect(replies.last).to eq("test1.example.com:* silenced for 1h")
    end
 
    it 'should silence for days' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":86400,"path":"silence/test1.example.com"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":86400,"reason":"Because Lita says so!","subscription":"client:test1.example.com"}').and_return(response)
      allow(response).to receive(:status).and_return(201)
      send_message('sensu silence test1 for 1d')
-     expect(replies.last).to eq("test1.example.com silenced for 1d")
+     expect(replies.last).to eq('test1.example.com:* silenced for 1d')
    end
 
    it 'should provide feedback for invalid duration' do
@@ -269,11 +269,11 @@ describe Lita::Handlers::Sensu, lita_handler: true do
    end
 
    it 'should handle internal sensu errors' do
-     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/stashes', '{"content":{"by":"Test User"},"expire":3600,"path":"silence/test1.example.com/disk-free"}').and_return(response)
+     allow_any_instance_of(Faraday::Connection).to receive(:post).with('http://sensu.example.com:5678/silenced', '{"creator":"Test User","expire":3600,"reason":"Because Lita says so!","subscription":"client:test1.example.com","check":"disk-free"}').and_return(response)
      allow(response).to receive(:status).and_return(500)
      expect(Lita.logger).to receive(:warn).with(/internal error/)
      send_message('sensu silence test1/disk-free')
-     expect(replies.last).to eq('An error occurred posting to test1.example.com/disk-free')
+     expect(replies.last).to eq('An error occurred silencing to test1.example.com:disk-free')
    end
   end #silence
 
