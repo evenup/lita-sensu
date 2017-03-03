@@ -73,14 +73,14 @@ describe Lita::Handlers::Sensu, lita_handler: true do
       allow(response).to receive(:status).and_return(200)
       allow(response).to receive(:body).and_return(history_response)
       send_message('sensu client test1.example.com history')
-      expect(replies.last).to eq("disk-metrics: status - 0; last checked - 2015-04-01 04:51:21 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\nkeepalive: status - 0; last checked - 2015-04-01 04:51:41 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-mailq: status - 0; last checked - 2015-04-01 04:50:48 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-running: status - 0; last checked - 2015-04-01 04:50:48 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npuppet-last_run: status - 0; last checked - 2015-04-01 04:40:45 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n")
+      expect(replies.last).to eq("disk-metrics: status - 0; last checked - #{localtime('2015-04-01 04:51:21 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\nkeepalive: status - 0; last checked - #{localtime('2015-04-01 04:51:41 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-mailq: status - 0; last checked - #{localtime('2015-04-01 04:50:48 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-running: status - 0; last checked - #{localtime('2015-04-01 04:50:48 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npuppet-last_run: status - 0; last checked - #{localtime('2015-04-01 04:40:45 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n")
     end
 
     it 'should fetch client info appending domain name' do
       allow(response).to receive(:status).and_return(200)
       allow(response).to receive(:body).and_return(history_response)
       send_message('sensu client test1 history')
-      expect(replies.last).to eq("disk-metrics: status - 0; last checked - 2015-04-01 04:51:21 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\nkeepalive: status - 0; last checked - 2015-04-01 04:51:41 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-mailq: status - 0; last checked - 2015-04-01 04:50:48 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-running: status - 0; last checked - 2015-04-01 04:50:48 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npuppet-last_run: status - 0; last checked - 2015-04-01 04:40:45 -0600; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n")
+      expect(replies.last).to eq("disk-metrics: status - 0; last checked - #{localtime('2015-04-01 04:51:21 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\nkeepalive: status - 0; last checked - #{localtime('2015-04-01 04:51:41 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-mailq: status - 0; last checked - #{localtime('2015-04-01 04:50:48 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npostfix-running: status - 0; last checked - #{localtime('2015-04-01 04:50:48 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\npuppet-last_run: status - 0; last checked - #{localtime('2015-04-01 04:40:45 -0600')}; history - 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n")
     end
 
     it 'should handle internal sensu errors' do
@@ -288,7 +288,7 @@ describe Lita::Handlers::Sensu, lita_handler: true do
       allow(response).to receive(:status).and_return(200)
       allow(response).to receive(:body).and_return(stashes_response)
       send_message('sensu stashes')
-      expect(replies.last).to eq("silence/test1.example.com/disk-free added on 2013-11-02 19:23:56 -0600 expires in 3600 seconds\n")
+      expect(replies.last).to eq("silence/test1.example.com/disk-free added on #{localtime('2013-11-02 19:23:56 -0600')} expires in 3600 seconds\n")
     end
 
     it 'should handle internal sensu errors' do
